@@ -1,73 +1,124 @@
-# React + TypeScript + Vite
+# Eisenhower Matrix - React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, productivity-focused web app to help you prioritize tasks using the Eisenhower Matrix method.
 
-Currently, two official plugins are available:
+## 🎯 About the Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The Eisenhower Matrix is a strategy that helps you prioritize tasks based on their urgency and importance. This project implements that method with a modern, responsive interface.
 
-## React Compiler
+### Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Four Priority Quadrants**:
 
-## Expanding the ESLint configuration
+  * **Do**: Urgent & Important
+  * **Schedule**: Not Urgent & Important
+  * **Delegate**: Urgent & Not Important
+  * **Eliminate**: Not Urgent & Not Important
+* **Task Management**: Add, edit, and delete tasks in any quadrant.
+* **Drag & Drop**: Easily drag tasks between quadrants.
+* **Data Persistence**: Your tasks are automatically saved in the browser (LocalStorage).
+* **Clean Interface**: Content-first design with visual indicators for deadlines and status.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Technologies Used
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* **React**: Library for building the UI.
+* **TypeScript**: For static typing and code safety.
+* **Vite**: Fast and lightweight build tool.
+* **CSS Modules**: Modular styling.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 How to Run
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+4. Open your browser at `http://localhost:5173` to use the application.
+
+## 📂 Project Structure
+
+```eisenhower-matrix/
+├── public/
+├── src/
+│   ├── components/
+│   │   └── Eisenhower-Matrix/
+│   │       ├── EisenhowerMatrix.tsx
+│   │       └── EisenhowerMatrix.module.css
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🤝 Contributing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Contributions are welcome! Feel free to open issues or pull requests for improvements, bug fixes, or new features.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+----------------------------------------------------------------
+
+# Eisenhower Matrix - React + TypeScript + Vite
+
+Uma aplicação web simples e focada em produtividade para ajudar você a priorizar tarefas usando o método da Matriz de Eisenhower.
+
+## 🎯 Sobre o Projeto
+
+A Matriz de Eisenhower é uma estratégia que permite priorizar tarefas baseada na sua urgência e importância. Este projeto implementa esse método com uma interface moderna e responsiva.
+
+### Funcionalidades
+
+- **Quatro Quadrantes de Prioridade**:
+    - **Faça (Do)**: Urgente & Importante
+    - **Agende (Schedule)**: Não Urgente & Importante
+    - **Delegue (Delegate)**: Urgente & Não Importante
+    - **Elimine (Eliminate)**: Não Urgente & Não Importante
+- **Gerenciamento de Tarefas**: Adicione, edite e exclua tarefas em qualquer quadrante.
+- **Drag & Drop**: Arraste tarefas facilmente entre os quadrantes.
+- **Persistência de Dados**: Suas tarefas são salvas automaticamente no navegador (LocalStorage).
+- **Interface Limpa**: Design focado no conteúdo com indicadores visuais de prazo e status.
+
+## 🛠️ Tecnologias Utilizadas
+
+- **React**: Biblioteca para construção da interface.
+- **TypeScript**: Para tipagem estática e segurança no código.
+- **Vite**: Build tool rápida e leve.
+- **CSS Modules**: Estilização modularizada.
+
+## 🚀 Como Executar
+
+1. Clone o repositório
+2. Instale as dependências:
+    ```bash
+    npm install
+    ```
+3. Inicie o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
+4. Abra o navegador em `http://localhost:5173` para usar a aplicação.
+## 📂 Estrutura do Projeto
+
+```eisenhower-matrix/
+├── public/
+├── src/
+│   ├── components/
+│   │   └── Eisenhower-Matrix/
+│   │       ├── EisenhowerMatrix.tsx
+│   │       └── EisenhowerMatrix.module.css
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
+
+## 🤝 Contribuição
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests para melhorias, correções de bugs ou novas funcionalidades.
