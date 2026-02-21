@@ -13,7 +13,7 @@
         sans-serif;
     padding: 16px;
     max-width: 1100px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .header {
@@ -120,9 +120,10 @@
 }
 
 .cardHint {
+    text-align: justify;
     max-width: 350px;
     margin: 6px 0 0 0;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     opacity: 0.75;
 }
 
@@ -199,6 +200,7 @@
 }
 
 .textarea {
+    color: black;
     width: 100%;
     margin-top: 8px;
     padding: 10px;
@@ -214,7 +216,8 @@
 }
 
 .addBtn {
-    padding: 10px 12px;
+    padding: 6px 8px;
+    font-size: 0.7rem;
     color: black;
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.15);
@@ -245,6 +248,7 @@
     border-radius: 12px;
     padding: 10px;
     background: white;
+    min-height: 66px;
 }
 
 .taskTop {
@@ -279,11 +283,16 @@
 }
 
 .taskNotes {
+    color: #676666;
     margin-top: 6px;
     font-size: 13px;
     opacity: 0.75;
-    white-space: pre-wrap;
+    text-align: justify;
     overflow-wrap: anywhere;
+}
+
+.taskNotes ul {
+    padding-inline-start: 0px !important;
 }
 
 .duePill {
@@ -304,6 +313,7 @@
 }
 
 .select {
+    color: black;
     padding: 8px 8px;
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.15);
@@ -316,6 +326,7 @@
 .smallBtn,
 .smallBtnSecondary,
 .smallBtnDanger {
+    color: black;
     padding: 8px 10px;
     border-radius: 10px;
     cursor: pointer;
@@ -368,6 +379,7 @@
 }
 
 .label {
+    font-weight: 700;
     border-radius: 12px;
     font-size: 0.65rem;
     padding: 4px 8px;

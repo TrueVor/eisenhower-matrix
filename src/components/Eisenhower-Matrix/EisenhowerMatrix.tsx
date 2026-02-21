@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import styles from "./EisenhowerMatrix.module.css";
 
 type QuadrantKey = "do" | "schedule" | "delegate" | "eliminate";
@@ -41,22 +42,26 @@ const QUADRANTS: Record<
     do: {
         heading: "Do",
         subheading: ["urgent", "important"],
-        hint: "If it takes less than 2 minutes, DO IT IMMEDIATELY. If not, divide in subtasks or move to Schedule if it can wait.",
+        hint: `If it takes less than 2 minutes, **Do It Immediately!**  
+        If not, *divide in subtasks* or move it to **Schedule** if it can wait.`,
     },
     schedule: {
         heading: "Schedule",
         subheading: ["notUrgent", "important"],
-        hint: "Plan. Set a due date or add to calendar. Review regularly.",
+        hint: `Plan. Set a due date or add to calendar.  
+        **Review regularly.**`,
     },
     delegate: {
         heading: "Delegate",
         subheading: ["urgent", "notImportant"],
-        hint: "Atribute to someone. Add notes about who/when etc.",
+        hint: `**Attribute to someone.**  
+        Add notes about who/when etc.`,
     },
     eliminate: {
         heading: "Eliminate",
         subheading: ["notUrgent", "notImportant"],
-        hint: "Reduce or eliminate. Be ruthless.",
+        hint: `Reduce or eliminate.  
+        **Be ruthless.**`,
     },
 };
 
@@ -255,7 +260,8 @@ export default function EisenhowerMatrix() {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)",
+                        backgroundColor: "rgba(0,0,0,0.6)",
+                        backdropFilter: "blur(3px)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -266,7 +272,7 @@ export default function EisenhowerMatrix() {
                     <div
                         style={{
                             backgroundColor: "white",
-                            padding: "2rem",
+                            padding: "1rem",
                             borderRadius: "16px",
                             maxWidth: "400px",
                             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -394,7 +400,9 @@ function QuadrantCard(props: {
                             </span>
                         ))}
                     </div>
-                    {/* <p className={styles.cardHint}>{info.hint}</p> */}
+                    <div className={styles.cardHint}>
+                        <ReactMarkdown>{info.hint}</ReactMarkdown>
+                    </div>
                 </div>
 
                 <div className={styles.cardHeaderRight}>
@@ -425,6 +433,7 @@ function QuadrantCard(props: {
                         }}
                         placeholder="Add a task…"
                         className={styles.input}
+                        maxLength={20}
                     />
                     <button
                         type="button"
@@ -448,7 +457,7 @@ function QuadrantCard(props: {
                     <label className={styles.dateLabel}>
                         <span style={{ marginRight: 8 }}>Due</span>
                         <input
-                            type="date"
+                            type="datetime-local"
                             value={dueDate}
                             onChange={(e) => setDueDate(e.target.value)}
                             className={styles.dateInput}
@@ -462,6 +471,7 @@ function QuadrantCard(props: {
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder="Notes (optional)…"
                         className={styles.textarea}
+                        style={{ color: "black" }}
                     />
                 )}
             </div>
@@ -496,6 +506,7 @@ function TaskRow(props: {
     const { quadrant: q, task: t } = props;
 
     const [editing, setEditing] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [draftTitle, setDraftTitle] = useState(t.title);
     const [draftNotes, setDraftNotes] = useState(t.notes || "");
     const [draftDue, setDraftDue] = useState(t.dueDate || "");
@@ -527,11 +538,32 @@ function TaskRow(props: {
         e.dataTransfer.effectAllowed = "move";
     }
 
+    function dueRemaining(dueDate: string) {
+        const now = Date.now();
+        const due = new Date(dueDate).getTime();
+        const diff = due - now;
+
+        if (diff < 0) return "Overdue";
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+        const parts = ["In"];
+        if (days > 0) parts.push(`${days}d`);
+        if (hours > 0) parts.push(`${hours}h`);
+        if (minutes > 0) parts.push(`${minutes}m`);
+
+        return `${parts.length > 0 ? parts.join(" ") : "Due soon"}`;
+    }
+
     return (
         <div
             className={styles.taskRow}
             style={{ opacity: t.done ? 0.7 : 1 }}
-            draggable
+            draggable={!editing}
             onDragStart={onDragStart}
             role="listitem"
         >
@@ -561,14 +593,33 @@ function TaskRow(props: {
                                     {t.title}
                                 </span>
                                 {t.dueDate ? (
-                                    <span className={styles.duePill}>
-                                        Due {t.dueDate}
+                                    <span
+                                        title={new Date(
+                                            t.dueDate,
+                                        ).toLocaleDateString("en-GB")}
+                                        className={styles.duePill}
+                                        style={{
+                                            color:
+                                                new Date(t.dueDate).getTime() <
+                                                Date.now()
+                                                    ? "#a10000ff"
+                                                    : "#20a100ff",
+                                        }}
+                                    >
+                                        {dueRemaining(t.dueDate)}
                                     </span>
                                 ) : null}
                             </div>
                             {t.notes ? (
-                                <div className={styles.taskNotes}>
-                                    {t.notes}
+                                <div
+                                    className={styles.taskNotes}
+                                    style={{
+                                        textDecoration: t.done
+                                            ? "line-through"
+                                            : "none",
+                                    }}
+                                >
+                                    <ReactMarkdown>{t.notes}</ReactMarkdown>
                                 </div>
                             ) : null}
                         </>
@@ -590,7 +641,7 @@ function TaskRow(props: {
                                 <label className={styles.dateLabel}>
                                     <span style={{ marginRight: 8 }}>Due</span>
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         value={draftDue}
                                         onChange={(e) =>
                                             setDraftDue(e.target.value)
@@ -604,6 +655,10 @@ function TaskRow(props: {
                                         type="button"
                                         onClick={saveEdit}
                                         className={styles.smallBtn}
+                                        style={{
+                                            color: "#004f00",
+                                            background: "#f9fff1",
+                                        }}
                                     >
                                         Save
                                     </button>
@@ -621,19 +676,25 @@ function TaskRow(props: {
                 </div>
 
                 <div className={styles.taskActions}>
-                    <select
-                        value={q}
-                        onChange={(e) =>
-                            props.onMove(q, e.target.value as QuadrantKey, t.id)
-                        }
-                        className={styles.select}
-                        aria-label="Move task"
-                    >
-                        <option value="do">Do</option>
-                        <option value="schedule">Schedule</option>
-                        <option value="delegate">Delegate</option>
-                        <option value="eliminate">Eliminate</option>
-                    </select>
+                    {editing && (
+                        <select
+                            value={q}
+                            onChange={(e) =>
+                                props.onMove(
+                                    q,
+                                    e.target.value as QuadrantKey,
+                                    t.id,
+                                )
+                            }
+                            className={styles.select}
+                            aria-label="Move task"
+                        >
+                            <option value="do">Do</option>
+                            <option value="schedule">Schedule</option>
+                            <option value="delegate">Delegate</option>
+                            <option value="eliminate">Eliminate</option>
+                        </select>
+                    )}
 
                     {!editing ? (
                         <button
@@ -645,14 +706,122 @@ function TaskRow(props: {
                         </button>
                     ) : null}
 
-                    <button
-                        type="button"
-                        onClick={() => props.onDelete(q, t.id)}
-                        className={styles.smallBtnDanger}
-                        title="Delete task"
-                    >
-                        Delete
-                    </button>
+                    {!editing ? null : (
+                        <>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDeleting(true);
+                                }}
+                                className={styles.smallBtnDanger}
+                                title="Delete task"
+                            >
+                                Delete
+                            </button>
+
+                            {deleting && (
+                                <div
+                                    style={{
+                                        position: "fixed",
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        backgroundColor: "rgba(0,0,0,0.6)",
+                                        backdropFilter: "blur(3px)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        zIndex: 9998,
+                                    }}
+                                >
+                                    <dialog
+                                        open
+                                        id={`delete-dialog-${t.id}`}
+                                        onCancel={(e) => {
+                                            e.preventDefault();
+                                            (
+                                                e.currentTarget as HTMLDialogElement
+                                            ).close();
+                                            setDeleting(false);
+                                        }}
+                                        style={{
+                                            padding: "1.5rem",
+                                            borderRadius: "12px",
+                                            border: "none",
+                                            maxWidth: "420px",
+                                            width: "90%",
+                                            boxShadow:
+                                                "0 6px 16px rgba(0, 0, 0, 0.66)",
+                                            zIndex: 9999,
+                                        }}
+                                    >
+                                        <h3
+                                            style={{
+                                                marginTop: 0,
+                                                color: "white",
+                                            }}
+                                        >
+                                            Delete task?
+                                        </h3>
+                                        <p style={{ color: "white" }}>
+                                            This action cannot be undone.
+                                        </p>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-end",
+                                                gap: "0.75rem",
+                                                marginTop: "1.25rem",
+                                            }}
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    (
+                                                        e.currentTarget.closest(
+                                                            "dialog",
+                                                        ) as HTMLDialogElement
+                                                    )?.close();
+                                                    setDeleting(false);
+                                                }}
+                                                className={
+                                                    styles.smallBtnSecondary
+                                                }
+                                                style={{
+                                                    color: "white",
+                                                    borderColor: "white",
+                                                }}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    props.onDelete(q, t.id);
+                                                    (
+                                                        e.currentTarget.closest(
+                                                            "dialog",
+                                                        ) as HTMLDialogElement
+                                                    )?.close();
+                                                    setDeleting(false);
+                                                }}
+                                                className={
+                                                    styles.smallBtnDanger
+                                                }
+                                                style={{
+                                                    color: "white",
+                                                    borderColor: "white",
+                                                }}
+                                            >
+                                                Yes, delete
+                                            </button>
+                                        </div>
+                                    </dialog>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </div>
